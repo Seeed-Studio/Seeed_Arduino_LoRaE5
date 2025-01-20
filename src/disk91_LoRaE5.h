@@ -18,6 +18,8 @@
 // ==========================================================
 // Setup options
 
+#define DSKLORAE5_DISABLE_FSTR
+
 #ifdef SEEED_WIO_TERMINAL
 // Supports 2 Serial
 #define __SERIAL1
@@ -70,7 +72,21 @@
 #define __DSKLORAE5_UNSET -1 // default value to unset a parameter
 #define __DSKLORAE5_UNSET_POWER -100
 
+#if defined(SEEED_WIO_TERMINAL) || defined(SEEED_XIAO_M0)
 #define __HWSERIAL_T Uart // type to be used for hardware serial, apprantly different are existing
+#elif defined(NRF52840_XXAA)
+#ifdef USE_TINYUSB
+#include <Adafruit_TinyUSB.h>
+#endif
+#define __HWSERIAL_T Uart
+#elif defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C6) || defined(CONFIG_IDF_TARGET_ESP32S3)
+#define __HWSERIAL_T HardwareSerial
+#elif defined(ARDUINO_XIAO_RA4M1)
+#define __HWSERIAL_T UART  
+#elif defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_RP2350)
+#define __HWSERIAL_T SerialUART
+#endif
+
 #define __DSKLORAE5_DEFAULT_AT_TMOUT 2000 // default time for AT command timeout in Ms
 #define __DSKLORAE5_JOIN_TIMEOUT 12000    // Specific timeout for Join procedure in Ms
 #define __DSKLORAE5_TX_TIMEOUT_BASE                                                                \
@@ -86,10 +102,27 @@
 #ifndef LOGSERIAL
 #define LOGSERIAL Adafruit_USBD_CDC
 #endif
-#else
+#elif defined(SEEED_WIO_TERMINAL) 
 #ifndef LOGSERIAL
 #define LOGSERIAL Uart
 #endif
+
+#else
+
+#if defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C6) || defined(CONFIG_IDF_TARGET_ESP32S3)    
+    #define LOGSERIAL HWCDC
+#elif defined(ARDUINO_XIAO_RA4M1)
+    #define LOGSERIAL _SerialUSB
+#elif defined(SEEED_XIAO_M0)
+#define LOGSERIAL Serial_
+#elif defined(NRF52840_XXAA)
+#define LOGSERIAL Adafruit_USBD_CDC
+#elif defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_RP2350)
+#define LOGSERIAL SerialUSB
+#else
+    #define LOGSERIAL Serial
+#endif
+
 #endif
 
 // ==========================================================

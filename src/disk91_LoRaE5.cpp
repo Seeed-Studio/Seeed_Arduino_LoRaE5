@@ -684,6 +684,7 @@ bool Disk91_LoRaE5::sendReceive_sync( // send a message on LoRaWan expert an ack
 ) {
     this->sendReceive(port, data, sz, true, NULL, rxBuffer, rxSize, rxPort, sf, pwr, retries,
                       false);
+    return 1;
 }
 
 bool Disk91_LoRaE5::send_sync( // send a message on LoRaWan, return true when sent is a success
@@ -697,6 +698,7 @@ bool Disk91_LoRaE5::send_sync( // send a message on LoRaWan, return true when se
                     // 0 means 1 uplink, no retry
 ) {
     this->sendReceive(port, data, sz, acked, NULL, NULL, NULL, NULL, sf, pwr, retries, false);
+    return 1;
 }
 
 bool Disk91_LoRaE5::join_sync( // send a message on LoRaWan, return true when sent is a success
@@ -704,6 +706,7 @@ bool Disk91_LoRaE5::join_sync( // send a message on LoRaWan, return true when se
     uint8_t pwr // Transmission power, use DSKLORAE5_DW_UNCHANGED to keep the previous one
 ) {
     this->sendReceive(0, NULL, 0, false, NULL, NULL, NULL, NULL, sf, pwr, 0, false);
+    return 1;
 }
 
 bool Disk91_LoRaE5::sendReceive( // send a message on LoRaWan, return true when sent is a success
@@ -905,6 +908,7 @@ bool Disk91_LoRaE5::sendReceive( // send a message on LoRaWan, return true when 
             ret = false;
         return ret;
     }
+    return 0;
 }
 
 // ---------------------------------------------------------------------
